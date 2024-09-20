@@ -201,6 +201,13 @@ bool NativeWindowDrmGbm::CreateGbmSurface() {
   window_ = gbm_surface_create(gbm_device_, drm_mode_info_.hdisplay,
                                drm_mode_info_.vdisplay, GBM_FORMAT_ARGB8888,
                                GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
+
+  if (!window_) {
+    window_ =
+        gbm_surface_create(gbm_device_, drm_mode_info_.hdisplay,
+                           drm_mode_info_.vdisplay, GBM_FORMAT_ARGB8888, 0);
+  }
+
   if (!window_) {
     ELINUX_LOG(ERROR) << "Failed to create the gbm surface.";
     valid_ = false;
@@ -209,6 +216,12 @@ bool NativeWindowDrmGbm::CreateGbmSurface() {
 
   window_offscreen_ = gbm_surface_create(gbm_device_, 1, 1, GBM_FORMAT_ARGB8888,
                                          GBM_BO_USE_RENDERING);
+
+  if (!window_offscreen_) {
+    window_offscreen_ =
+        gbm_surface_create(gbm_device_, 1, 1, GBM_FORMAT_ARGB8888, 0);
+  }
+
   if (!window_offscreen_) {
     ELINUX_LOG(ERROR) << "Failed to create the gbm surface for offscreen.";
     return false;
